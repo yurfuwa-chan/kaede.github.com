@@ -1,0 +1,17 @@
+.resultList li{
+	width:500px;
+	clear:both;
+}
+.resultList div{
+	margin:0;
+	float:left;
+}
+.resultList .profile{
+	width:50px;
+}
+.resultList .media{
+	width:50px;
+}
+.resultList .content{
+	width:400px;
+}

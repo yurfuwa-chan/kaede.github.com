@@ -1,0 +1,74 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" type="text/css"  href="css/bootstrap.min.css" />
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.2/underscore-min.js"></script>
+	<script type="text/javascript" charset="UTF-8">
+		$(function(){
+				var _self = this;
+				$.getJSON("entry.json",null,function(data){
+					update(data,sort_by_owner)
+				})
+
+
+				function sort_by_owner(obj){return (obj.owner)}
+				function sort_by_level(obj){return -Number(obj.level)}
+				function sort_by_totals(obj){return -Number(obj.totals)}
+				function sort_by_members(obj){return -Number(obj.members)}
+				function sort_by_bonus(obj){return -(Number(obj.prof_bonus)+Number(obj.news_bonus))}
+
+				function update(data,sort_func){
+					$(".well *").remove();
+					data.results = _.filter(data.results,function(obj){return obj.owner.length})	
+					if(sort_func){
+						data.results = _.sortBy(data.results,sort_func)	
+					}
+					var tmpl = _.template($("#resultListTempl").html(),data)
+					$(".well").append(tmpl);
+					$("th a").click(function(){
+						update(data,eval("sort_by_"+$(this).attr("data-sort")))
+					})
+				}
+		})
+	</script>
+	<script type="text/template" id="resultListTempl">		
+		<table class="table table-striped">
+			<tr>
+				<th width="180"><a href="javascript:void(0)" data-sort="owner">オーナー</a></th>
+				<th><a href="javascript:void(0)" data-sort="level">レベル</a></th>
+				<th><a href="javascript:void(0)" data-sort="members">メンバー数</a></th>
+				<th><a href="javascript:void(0)" data-sort="totals">総来場者数</a></th>
+				<th><a href="javascript:void(0)" data-sort="bonus">経験ボーナス</a></th>
+			</tr>
+			<tbody>
+			<% _.each(results,function(obj){ %>
+				<tr>
+					<td><a href="<%= obj.url %>"><%= obj.owner %></a></td>
+					<td><%= obj.level %></td>
+					<td><%= obj.members %></td>
+					<td><%= obj.totals %></td>
+					<td><%= Number(obj.prof_bonus)+Number(obj.news_bonus) %></td>
+				</tr>
+			<% }); %>
+			</tbody>
+		</table>
+	</script>
+	<style type="text/css">
+		td:nth-child(n+2){
+			text-align:right !important;
+		}
+	</style>
+</head>
+<body>
+	<div class="container-fluid">
+		<h1>ニコニコゲームマスターwith風来のシレンRTA 参加者名簿</h1>
+		<div class="row">
+			<div class="well span7" style="padding-left:0;padding-right:0">
+				
+			</div>
+		</div>
+	</div>
+</body>
+</html>
